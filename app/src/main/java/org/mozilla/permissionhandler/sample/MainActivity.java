@@ -1,14 +1,21 @@
 package org.mozilla.permissionhandler.sample;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import org.mozilla.permissionhandler.PermissionHandle;
+import org.mozilla.permissionhandler.PermissionHandler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,53 +24,84 @@ public class MainActivity extends AppCompatActivity {
 
     // A sample of permission requesting based on
     // https://developer.android.com/training/permissions/requesting.html
+    // and later rewritten with PermissionHandler
 
-    private static final int STORAGE_REQUEST_CODE = 8899;
     private static final int CREATE_FILE_FAILED = -1;
+    private PermissionHandler permissionHandler;
+    private static final int ACTION_CREATE_FILE = 0;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        permissionHandler = new PermissionHandler(new PermissionHandle() {
+            @Override
+            public void doActionDirect(String permission, int actionId, Parcelable params) {
+                doCreation();
+            }
+
+            @Override
+            public void doActionGranted(String permission, int actionId, Parcelable params) {
+                doCreation();
+            }
+
+            @Override
+            public void doActionSetting(String permission, int actionId, Parcelable params) {
+                doCreation();
+            }
+
+            @Override
+            public void doActionNoPermission(String permission, int actionId, Parcelable params) {
+                Toast.makeText(MainActivity.this, "User Rejects", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public int getDoNotAskAgainDialogString(int actionId) {
+                return R.string.need_permission;
+            }
+
+            @Override
+            public Snackbar makeAskAgainSnackBar(int actionId) {
+                return PermissionHandler.makeAskAgainSnackBar(MainActivity.this, findViewById(R.id.container), R.string.need_permission);
+            }
+
+            @Override
+            public void requestPermissions(int actionId) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, actionId);
+            }
+        });
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Here, thisActivity is the current activity
-                if (ContextCompat.checkSelfPermission(MainActivity.this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-
-                    // Should we show an explanation?
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                        Toast.makeText(MainActivity.this, R.string.need_permission, Toast.LENGTH_LONG).show();
-                    } else {
-                        // No explanation needed, we can request the permission.
-                        ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, STORAGE_REQUEST_CODE);
-                    }
-                } else {
-                    doCreation();
-                }
+                permissionHandler.tryAction(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, ACTION_CREATE_FILE, null);
             }
         });
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case STORAGE_REQUEST_CODE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    doCreation();
-                } else {
-                    Toast.makeText(MainActivity.this, R.string.need_permission, Toast.LENGTH_LONG).show();
-                }
-            }
-        }
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        permissionHandler.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        permissionHandler.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        permissionHandler.onActivityResult(this, requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionHandler.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     private void doCreation() {
