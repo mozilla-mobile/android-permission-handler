@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android-permission-handler.iml" filepath="$PROJECT_DIR$/android-permission-handler.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/permissionhandler/permissionhandler.iml" filepath="$PROJECT_DIR$/permissionhandler/permissionhandler.iml" />
     </modules>
   </component>
 </project>
