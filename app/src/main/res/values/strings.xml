@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PermissionHandler</string>
+    <string name="button_label">Create file</string>
+    <string name="need_permission">We need permission to create files in external storage on your device :)</string>
+</resources>
