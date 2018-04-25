@@ -2,10 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
+
     defaultConfig {
+        buildToolsVersion "27.0.3"
         applicationId "org.mozilla.permissionhandler"
         minSdkVersion 19
         targetSdkVersion 27
+        build
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
