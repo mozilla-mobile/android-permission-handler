@@ -69,6 +69,13 @@ public interface PermissionHandle {
     Snackbar makeAskAgainSnackBar(int actionId);
 
     /**
+     * Show a toast letting user know the permission is denied.
+     *
+     * @param  actionId the designated action
+     */
+    void permissionDeniedToast(int actionId);
+
+    /**
      * Try to Request the corresponding permission to this actionId
      *
      * @param  actionId the designated action

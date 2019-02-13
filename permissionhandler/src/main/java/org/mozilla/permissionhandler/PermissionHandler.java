@@ -146,7 +146,8 @@ public class PermissionHandler {
                 permissionHandle.doActionGranted(permission, actionId, params);
                 clearAction();
             } else {
-                showSnackBar();
+                permissionHandle.permissionDeniedToast(actionId);
+                permissionNotGranted();
             }
         }
     }

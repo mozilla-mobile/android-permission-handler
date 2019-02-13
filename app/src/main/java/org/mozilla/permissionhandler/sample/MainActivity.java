@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         permissionHandler = new PermissionHandler(new PermissionHandle() {
+
             @Override
             public void doActionDirect(String permission, int actionId, Parcelable params) {
                 doCreation();
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void doActionNoPermission(String permission, int actionId, Parcelable params) {
-                Toast.makeText(MainActivity.this, "User Rejects", Toast.LENGTH_LONG).show();
+
             }
 
             @Override
@@ -64,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public Snackbar makeAskAgainSnackBar(int actionId) {
                 return PermissionHandler.makeAskAgainSnackBar(MainActivity.this, findViewById(R.id.container), R.string.need_permission);
+            }
+
+            @Override
+            public void permissionDeniedToast(int actionId) {
+                Toast.makeText(MainActivity.this, "User Rejects", Toast.LENGTH_LONG).show();
             }
 
             @Override
