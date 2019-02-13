@@ -58,11 +58,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public int getDoNotAskAgainDialogString(int actionId) {
-                return R.string.need_permission;
-            }
-
-            @Override
             public Snackbar makeAskAgainSnackBar(int actionId) {
                 return PermissionHandler.makeAskAgainSnackBar(MainActivity.this, findViewById(R.id.container), R.string.need_permission);
             }
