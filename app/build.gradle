@@ -4,7 +4,6 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        buildToolsVersion "27.0.3"
         applicationId "org.mozilla.permissionhandler"
         minSdkVersion 19
         targetSdkVersion 27
