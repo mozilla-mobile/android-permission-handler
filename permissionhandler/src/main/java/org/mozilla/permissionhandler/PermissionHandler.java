@@ -13,6 +13,8 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
@@ -176,6 +178,28 @@ public class PermissionHandler {
 
     public static Snackbar makeAskAgainSnackBar(final Fragment fragment, final View view, final int stringId) {
         return Snackbar.make(view, stringId, Snackbar.LENGTH_LONG)
+                .setAction(R.string.permission_handler_permission_dialog_setting, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        intentOpenSettings(fragment, REQUEST_SETTINGS);
+                    }
+                });
+    }
+
+    public static Snackbar makeAskAgainSnackBar(final Activity activity, final View view, final int stringId, @Nullable final View anchorView) {
+        return Snackbar.make(view, stringId, Snackbar.LENGTH_LONG)
+                .setAnchorView(anchorView)
+                .setAction(R.string.permission_handler_permission_dialog_setting, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        intentOpenSettings(activity, REQUEST_SETTINGS);
+                    }
+                });
+    }
+
+    public static Snackbar makeAskAgainSnackBar(final Fragment fragment, final View view, final int stringId, @Nullable final View anchorView) {
+        return Snackbar.make(view, stringId, Snackbar.LENGTH_LONG)
+                .setAnchorView(anchorView)
                 .setAction(R.string.permission_handler_permission_dialog_setting, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
